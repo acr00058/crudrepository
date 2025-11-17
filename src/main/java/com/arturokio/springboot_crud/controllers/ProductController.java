@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.arturokio.springboot_crud.entities.Product;
 import com.arturokio.springboot_crud.services.ProductService;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +48,16 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
         Optional<Product> prod=service.findById(id);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.save(product));
+        return ResponseEntity.status(HttpStatus.OK).body(service.save(prod.get()));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        Optional<Product> prod=service.findById(id);
+        if(prod.isPresent()){
+            service.delete(prod.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
     }
 
 }
